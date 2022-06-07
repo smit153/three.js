@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0px;
+        overflow: hidden;
+        background-color: black;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100vh;
+        cursor: grab;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from "//cdn.skypack.dev/three@0.131.1?min";
+      import { OrbitControls } from "//cdn.skypack.dev/three@0.131.1/examples/jsm/controls/OrbitControls?min";
+
+      // ----
+      // main
+      // ----
+
+      const renderer = new THREE.WebGLRenderer();
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, 2, 0.1, 100);
+      const controls = new OrbitControls(camera, renderer.domElement);
+
+      scene.background = new THREE.Color("black");
+      camera.position.set(0.75, 0.5, 0.65);
+      controls.enableDamping = true;
+      controls.autoRotate = true;
+
+      const light = new THREE.DirectionalLight("white", 0.5);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight("white", 0.5));
+
+      // photo by Shifaaz shamoon - https://unsplash.com/photos/GIU6JpxrL84
+      const url0 =
+        "https://images.unsplash.com/photo-1628458622153-91f541e903d2?ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60";
+      const tex0 = new THREE.TextureLoader().load(url0);
+      tex0.repeat.set(0.05, 0.05);
+
+      {
+        // glass
+        const geom = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+        const mat = new THREE.MeshPhysicalMaterial({
+          transmission: 1,
+          ior: 1.5,
+          roughness: 1,
+          /* -> mult -> */ roughnessMap: tex0, // use .g
+          thickness: 0.3,
+          emissive: "aqua",
+          emissiveIntensity: 0.5,
+        });
+        const mesh = new THREE.Mesh(geom, mat);
+        scene.add(mesh);
+      }
+
+      {
+        // obj
+        const geom = new THREE.TorusKnotGeometry(0.4, 0.1, 256, 32);
+        const mat = new THREE.MeshPhysicalMaterial({ color: "red" });
+        const mesh = new THREE.Mesh(geom, mat);
+        scene.add(mesh);
+      }
+
+      // ----
+      // render
+      // ----
+
+      renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+        controls.update();
+      });
+
+      // ----
+      // view
+      // ----
+
+      function resize(w, h, dpr = devicePixelRatio) {
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      addEventListener("resize", () => resize(innerWidth, innerHeight));
+      dispatchEvent(new Event("resize"));
+      document.body.prepend(renderer.domElement);
+    </script>
+  </body>
+</html>

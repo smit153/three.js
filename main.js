@@ -266,7 +266,7 @@ document.querySelector("#viewWorkBtn").addEventListener("click", (e) => {
     duration: 1,
     delay: 2,
     onComplete: () => {
-      window.location.href = "./cards.html";
+      window.location.href = "https://three-js-work.vercel.app/";
     },
   });
 });

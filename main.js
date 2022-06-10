@@ -220,13 +220,6 @@ addEventListener("mousemove", (event) => {
   mouse.y = -(event.clientY / innerHeight) * 2 + 1;
 });
 
-gsap.to("#christopherLis", {
-  opacity: 1,
-  duration: 1.5,
-  y: 0,
-  ease: "expo",
-});
-
 gsap.to("#oneWithAn", {
   opacity: 1,
   duration: 1.5,
